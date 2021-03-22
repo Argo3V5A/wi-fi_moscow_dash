@@ -2,65 +2,52 @@ import dash
 import json
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly.express as px
 import pandas as pd
-from transdata import preq
+import visual
+from transdata import clearData
 
+#----------------------------------------------------------------------
 with open(r".\data\data-20191015T0100.json", 'r') as f:
     js = json.load(f)
 
-fdf = pd.DataFrame.from_dict(js)
-sdf = pd.read_csv(r"./data/data-9776-2020-12-21.csv", sep=';', encoding='cp1251')
+_first_df = pd.DataFrame.from_dict(js)
+_second_df = pd.read_csv(r"./data/data-9776-2020-12-21.csv", sep=';', encoding='cp1251')
 
-data = preq(fdf.iloc[:, :13].copy())
-sec_data = preq(sdf)
+data = clearData(_first_df.iloc[:, :13].copy())
+second_data = clearData(_second_df)
 
-map_token = open("mapbox_token.txt").read()  # you will need your own token
-# '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+join_data = pd.concat([data, second_data], join='inner')
 
-map_center = {'lat': data['Lat'].values[0], 'lon': data['Lon'].values[0]}
-fig = px.scatter_mapbox(data,
-                        lat="Lat",
-                        lon="Lon",
-                        hover_name="Name",
-                        hover_data=["District"],
-                        color_discrete_sequence=["fuchsia"],
-                        zoom=9,
-                        height=500,
-                        center=map_center,
-                        title='Wi-fi в парках Москвы',
-                        labels=dict(size=data['CoverageArea']),
-                        size=data['CoverageArea'])
+__map_token__ = open("mapbox_token.txt").read()  # you will need your own token
 
-fig.update_layout(mapbox_style="dark", mapbox_accesstoken=map_token)
-fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-# fig.show()
+#----------------------------------------------------------------------
 
-map_center2 = {'lat': sec_data['Lat'].values[0], 'lon': sec_data['Lon'].values[0]}
-fig2 = px.scatter_mapbox(sec_data,
-                         lat="Lat",
-                         lon="Lon",
-                         hover_name="Name",
-                         hover_data=["District"],
-                         color_discrete_sequence=["fuchsia"],
-                         zoom=9,
-                         height=500,
-                         center=map_center2,
-                         title='Wi-fi в парках Москвы',
-                         labels=dict(size=sec_data['CoverageArea']),
-                         size=sec_data['CoverageArea'])
+fig = visual.mapFigure(join_data, __map_token__)
+fig2 = visual.treemapFigure(join_data)
 
-fig2.update_layout(mapbox_style="dark", mapbox_accesstoken=map_token)
-fig2.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-# fig2.show()
-# '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+external_stylesheets = [
+    {
+        "href": "https://fonts.googleapis.com/css2?"
+                "family=Lato:wght@400;700&display=swap",
+        "rel": "stylesheet",
+    },
+]
 
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app.title = "Public Wi-fi Moscow: Know the freebie by sight!"
 
-app = dash.Dash(__name__)
-app.title = "Wi-fi в паркам москвы: Understand Your Avocados!"
-
-app.layout = html.Div([
-    dcc.Graph(figure=fig)]
+app.layout = html.Div(
+    children=[
+        html.H1(children="Public wi-fi Mocsow Analytics",
+                className="header-title"),
+        html.P(
+            children="Analyz    e the behavior of avocado prices"
+                     " and the number of avocados sold in the US"
+                     " between 2015 and 2018",
+        ),
+        dcc.Graph(figure=fig),
+        dcc.Graph(figure=fig2)
+    ]
 )
 
 if __name__ == "__main__":
