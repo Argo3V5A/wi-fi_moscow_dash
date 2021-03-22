@@ -38,15 +38,42 @@ app.title = "Public Wi-fi Moscow: Know the freebie by sight!"
 
 app.layout = html.Div(
     children=[
-        html.H1(children="Public wi-fi Mocsow Analytics",
-                className="header-title"),
-        html.P(
-            children="Analyz    e the behavior of avocado prices"
-                     " and the number of avocados sold in the US"
-                     " between 2015 and 2018",
+        html.Div(
+            children=[
+                html.P(children="📶", className="header-emoji"),
+                html.H1(
+                    children="Public Wi-fi Moscow", className="header-title"
+                ),
+                html.P(
+                    children="Открытые данные о точкам Wi-Fi г. Москва."
+                    " Более 4000 т. точек в парках и публичных местах."
+                    " Практически все точки имеют покрытие в 50м!",
+                    className="header-description",
+                ),
+            ],
+            className="header",
         ),
-        dcc.Graph(figure=fig),
-        dcc.Graph(figure=fig2)
+        html.Div(
+            children=[
+                html.Div(
+                    children=dcc.Graph(
+                        id="price-chart",
+                        config={"displayModeBar": False},
+                        figure=fig,
+                    ),
+                    className="card",
+                ),
+                html.Div(
+                    children=dcc.Graph(
+                        id="volume-chart",
+                        config={"displayModeBar": False},
+                        figure=fig2,
+                    ),
+                    className="card",
+                ),
+            ],
+            className="wrapper",
+        ),
     ]
 )
 
