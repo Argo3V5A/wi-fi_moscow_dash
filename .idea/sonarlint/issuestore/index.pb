@@ -15,3 +15,7 @@ M
 env/pkgs.txt,7\5\75856c631ffca5b93dbf73db58309fb30592f113
 ?
 env/dashWeb.yml,f\4\f4e437a31245e92fef32d2ceb915c22bb7575f17
+9
+	visual.py,9\5\953fd3e38fdbed470d8ea43bd39ef5504edf35b6
+@
+assets/style.css,5\0\50d983db3c46465e37c94b0c2ae789b31d18f9ac

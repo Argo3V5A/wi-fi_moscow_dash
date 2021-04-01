@@ -4,23 +4,24 @@ import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 import visual
+import setting
 from transdata import clearData
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 with open(r".\data\data-20191015T0100.json", 'r') as f:
     js = json.load(f)
 
-_first_df = pd.DataFrame.from_dict(js)
-_second_df = pd.read_csv(r"./data/data-9776-2020-12-21.csv", sep=';', encoding='cp1251')
+__first_df__ = pd.DataFrame.from_dict(js)
+__second_df__ = pd.read_csv(r"./data/data-9776-2020-12-21.csv", sep=';', encoding='cp1251')
 
-data = clearData(_first_df.iloc[:, :13].copy())
-second_data = clearData(_second_df)
-
+data = clearData(__first_df__.iloc[:, :13].copy())
+second_data = clearData(__second_df__)
 join_data = pd.concat([data, second_data], join='inner')
 
-__map_token__ = open("mapbox_token.txt").read()  # you will need your own token
+api = setting.Dostup()
+__map_token__ = api.MY_API_TOKEN['mapbox_token']  # you will need your own token
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 fig = visual.mapFigure(join_data, __map_token__)
 fig2 = visual.treemapFigure(join_data)
@@ -46,8 +47,8 @@ app.layout = html.Div(
                 ),
                 html.P(
                     children="Открытые данные о точкам Wi-Fi г. Москва."
-                    " Более 4000 т. точек в парках и публичных местах."
-                    " Практически все точки имеют покрытие в 50м!",
+                             " Более 4000 т. точек в парках и публичных местах."
+                             " Практически все точки имеют покрытие в 50м!",
                     className="header-description",
                 ),
             ],
